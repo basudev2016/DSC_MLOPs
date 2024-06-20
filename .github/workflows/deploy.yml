@@ -34,42 +34,42 @@ jobs:
 
     - name: Set up Kubeconfig
       run: |
-        echo '$KUBECONFIG_CONTENTS' > $HOME/.kube/config
+        mkdir -p $HOME/.kube
+        echo "$KUBECONFIG_CONTENTS" > $HOME/.kube/config
       env: 
         KUBECONFIG_CONTENTS: |
           apiVersion: v1
-clusters:
-- cluster:
-    certificate-authority: C:\Users\Admin\.minikube\ca.crt
-    extensions:
-    - extension:
-        last-update: Thu, 20 Jun 2024 18:39:49 IST
-        provider: minikube.sigs.k8s.io
-        version: v1.33.1
-      name: cluster_info
-    server: https://172.28.179.85:8443
-  name: minikube
-contexts:
-- context:
-    cluster: minikube
-    extensions:
-    - extension:
-        last-update: Thu, 20 Jun 2024 18:39:49 IST
-        provider: minikube.sigs.k8s.io
-        version: v1.33.1
-      name: context_info
-    namespace: default
-    user: minikube
-  name: minikube
-current-context: minikube
-kind: Config
-preferences: {}
-users:
-- name: minikube
-  user:
-    client-certificate: C:\Users\Admin\.minikube\profiles\minikube\client.crt
-    client-key: C:\Users\Admin\.minikube\profiles\minikube\client.key
-
+          clusters:
+          - cluster:
+              certificate-authority: C:\Users\Admin\.minikube\ca.crt
+              extensions:
+              - extension:
+                  last-update: Thu, 20 Jun 2024 18:39:49 IST
+                  provider: minikube.sigs.k8s.io
+                  version: v1.33.1
+                name: cluster_info
+              server: https://172.28.179.85:8443
+            name: minikube
+          contexts:
+          - context:
+              cluster: minikube
+              extensions:
+              - extension:
+                  last-update: Thu, 20 Jun 2024 18:39:49 IST
+                  provider: minikube.sigs.k8s.io
+                  version: v1.33.1
+                name: context_info
+              namespace: default
+              user: minikube
+            name: minikube
+          current-context: minikube
+          kind: Config
+          preferences: {}
+          users:
+          - name: minikube
+            user:
+              client-certificate: C:\Users\Admin\.minikube\profiles\minikube\client.crt
+              client-key: C:\Users\Admin\.minikube\profiles\minikube\client.key
 
     - name: Deploy to Minikube
       run: |
