@@ -20,7 +20,7 @@ jobs:
       uses: docker/login-action@v1
       with:
         username: basudevpanda
-        password: ${{ secrets.dckr_pat_6GkVrXg_lyh1FAC8GY1aD5ux2Dk }}
+        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
     - name: Build and push Docker image
       run: |
