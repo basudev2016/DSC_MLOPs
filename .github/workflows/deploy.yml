@@ -19,13 +19,13 @@ jobs:
     - name: Log in to Docker Hub
       uses: docker/login-action@v1
       with:
-        username: basudevpanda
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
     - name: Build and push Docker image
       run: |
-        docker build -t basudevpanda/dsc-mlops:latest .
-        docker push basudevpanda/dsc-mlops:latest
+        docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/dsc-mlops:latest .
+        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/dsc-mlops:latest
 
     - name: Set up Kubectl
       uses: azure/setup-kubectl@v1
@@ -36,29 +36,17 @@ jobs:
       run: |
         mkdir -p $HOME/.kube
         echo "$KUBECONFIG_CONTENTS" > $HOME/.kube/config
-      env: 
+      env:
         KUBECONFIG_CONTENTS: |
           apiVersion: v1
           clusters:
           - cluster:
-              certificate-authority: C:\Users\Admin\.minikube\ca.crt
-              extensions:
-              - extension:
-                  last-update: Thu, 20 Jun 2024 18:39:49 IST
-                  provider: minikube.sigs.k8s.io
-                  version: v1.33.1
-                name: cluster_info
+              certificate-authority-data: {{ secrets.K8S_CA_DATA }}
               server: https://172.28.179.85:8443
             name: minikube
           contexts:
           - context:
               cluster: minikube
-              extensions:
-              - extension:
-                  last-update: Thu, 20 Jun 2024 18:39:49 IST
-                  provider: minikube.sigs.k8s.io
-                  version: v1.33.1
-                name: context_info
               namespace: default
               user: minikube
             name: minikube
@@ -68,8 +56,8 @@ jobs:
           users:
           - name: minikube
             user:
-              client-certificate: C:\Users\Admin\.minikube\profiles\minikube\client.crt
-              client-key: C:\Users\Admin\.minikube\profiles\minikube\client.key
+              client-certificate-data: {{ secrets.K8S_CLIENT_CERT_DATA }}
+              client-key-data: {{ secrets.K8S_CLIENT_KEY_DATA }}
 
     - name: Deploy to Minikube
       run: |
