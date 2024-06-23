@@ -34,7 +34,7 @@ jobs:
 
     - name: Create CA certificate file
       run: |
-        mkdir -p $HOME/.kube
+        mkdir -p $HOME/.kube/minikube
         echo "${{ secrets.K8S_CA_DATA }}" | base64 --decode > $HOME/.kube/minikube/ca.crt
 
     - name: Create client certificate file
