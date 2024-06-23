@@ -35,19 +35,19 @@ jobs:
     - name: Create CA certificate file
       run: |
         mkdir -p $HOME/.kube
-        echo "${{ secrets.K8S_CA_DATA }}" | base64 --decode > $HOME/runner/.kube/minikube/ca.crt
+        echo "${{ secrets.K8S_CA_DATA }}" | base64 --decode > $HOME/.kube/minikube/ca.crt
 
     - name: Create client certificate file
       run: |
-        echo "${{ secrets.K8S_CLIENT_CERT_DATA }}" | base64 --decode > $HOME/runner/.kube/minikube/client.crt
+        echo "${{ secrets.K8S_CLIENT_CERT_DATA }}" | base64 --decode > $HOME/.kube/minikube/client.crt
 
     - name: Create client key file
       run: |
-        echo "${{ secrets.K8S_CLIENT_KEY_DATA }}" | base64 --decode > $HOME/runner/.kube/minikube/client.key
+        echo "${{ secrets.K8S_CLIENT_KEY_DATA }}" | base64 --decode > $HOME/.kube/minikube/client.key
 
     - name: Set up Kubeconfig
       run: |
-        echo "${{ secrets.KUBECONFIG_CONTENTS }}" | base64 --decode > $HOME/runner/.kube/minikube/config
+        echo "${{ secrets.KUBECONFIG_CONTENTS }}" | base64 --decode > $HOME/.kube/minikube/config
 
     - name: Deploy to Minikube
       run: |
