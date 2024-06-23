@@ -13,6 +13,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Set up Kubectl
+      uses: azure/setup-kubectl@v1
+      with:
+        version: 'latest'
+
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
 
@@ -27,17 +32,22 @@ jobs:
         docker build -t basudevpanda/dsc-mlops:latest .
         docker push basudevpanda/dsc-mlops:latest
 
-    - name: Set up Kubectl
-      uses: azure/setup-kubectl@v1
-      with:
-        version: 'latest'
-
-    - name: Create kubeconfig file
+    - name: Create CA certificate file
       run: |
         mkdir -p $HOME/.kube
-        echo "$KUBECONFIG_CONTENTS" | base64 --decode > $HOME/.kube/config
-      env:
-        KUBECONFIG_CONTENTS: ${{ secrets.KUBECONFIG_CONTENTS }}
+        echo "${{ secrets.K8S_CA_DATA }}" | base64 --decode > $HOME/.kube/ca.crt
+
+    - name: Create client certificate file
+      run: |
+        echo "${{ secrets.K8S_CLIENT_CERT_DATA }}" | base64 --decode > $HOME/.kube/client.crt
+
+    - name: Create client key file
+      run: |
+        echo "${{ secrets.K8S_CLIENT_KEY_DATA }}" | base64 --decode > $HOME/.kube/client.key
+
+    - name: Set up Kubeconfig
+      run: |
+        echo "${{ secrets.KUBECONFIG_CONTENTS }}" | base64 --decode > $HOME/.kube/config
 
     - name: Deploy to Minikube
       run: |
