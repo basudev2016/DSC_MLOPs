@@ -53,12 +53,28 @@ jobs:
 
     - name: Set up Kubeconfig
       run: |
-        echo "$KUBECONFIG_CONTENTS" | base64 --decode > $HOME/.kube/config
-        sed -i 's#C:\\Users\\Admin\\.minikube\\ca.crt#$HOME/.kube/ca.crt#g' $HOME/.kube/config
-        sed -i 's#C:\\Users\\Admin\\.minikube\\profiles\\minikube\\client.crt#$HOME/.kube/client.crt#g' $HOME/.kube/config
-        sed -i 's#C:\\Users\\Admin\\.minikube\\profiles\\minikube\\client.key#$HOME/.kube/client.key#g' $HOME/.kube/config
-      env: 
-        KUBECONFIG_CONTENTS: ${{ secrets.KUBECONFIG_CONTENTS }}
+        cat <<EOF > $HOME/.kube/config
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority: $HOME/.kube/ca.crt
+    server: https://172.28.179.85:8443
+  name: minikube
+contexts:
+- context:
+    cluster: minikube
+    namespace: default
+    user: minikube
+  name: minikube
+current-context: minikube
+kind: Config
+preferences: {}
+users:
+- name: minikube
+  user:
+    client-certificate: $HOME/.kube/client.crt
+    client-key: $HOME/.kube/client.key
+EOF
 
     - name: Deploy to Minikube
       run: |
