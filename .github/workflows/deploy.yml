@@ -24,8 +24,8 @@ jobs:
 
     - name: Build and push Docker image
       run: |
-        docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/dsc-mlops:latest .
-        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/dsc-mlops:latest
+        docker build -t basudevpanda/dsc-mlops:latest .
+        docker push basudevpanda/dsc-mlops:latest
 
     - name: Set up Kubectl
       uses: azure/setup-kubectl@v1
@@ -35,29 +35,9 @@ jobs:
     - name: Set up Kubeconfig
       run: |
         mkdir -p $HOME/.kube
-        echo "$KUBECONFIG_CONTENTS" > $HOME/.kube/config
-      env:
-        KUBECONFIG_CONTENTS: |
-          apiVersion: v1
-          clusters:
-          - cluster:
-              certificate-authority-data: {{ secrets.K8S_CA_DATA }}
-              server: https://172.28.179.85:8443
-            name: minikube
-          contexts:
-          - context:
-              cluster: minikube
-              namespace: default
-              user: minikube
-            name: minikube
-          current-context: minikube
-          kind: Config
-          preferences: {}
-          users:
-          - name: minikube
-            user:
-              client-certificate-data: {{ secrets.K8S_CLIENT_CERT_DATA }}
-              client-key-data: {{ secrets.K8S_CLIENT_KEY_DATA }}
+        echo "$KUBECONFIG_CONTENTS" | base64 --decode > $HOME/.kube/config
+      env: 
+        KUBECONFIG_CONTENTS: ${{ secrets.KUBECONFIG_CONTENTS }}
 
     - name: Deploy to Minikube
       run: |
