@@ -32,15 +32,9 @@ jobs:
       with:
         version: 'latest'
 
-    - name: Set up Kubeconfig
-      run: |
-        mkdir -p $HOME/.kube
-        echo "$KUBECONFIG_CONTENTS" | base64 --decode > $HOME/.kube/config
-      env: 
-        KUBECONFIG_CONTENTS: ${{ secrets.KUBECONFIG_CONTENTS }}
-
     - name: Create CA certificate file
       run: |
+        mkdir -p $HOME/.kube
         echo "$K8S_CA_DATA" | base64 --decode > $HOME/.kube/ca.crt
       env:
         K8S_CA_DATA: ${{ secrets.K8S_CA_DATA }}
@@ -56,6 +50,15 @@ jobs:
         echo "$K8S_CLIENT_KEY_DATA" | base64 --decode > $HOME/.kube/client.key
       env:
         K8S_CLIENT_KEY_DATA: ${{ secrets.K8S_CLIENT_KEY_DATA }}
+
+    - name: Set up Kubeconfig
+      run: |
+        echo "$KUBECONFIG_CONTENTS" | base64 --decode > $HOME/.kube/config
+        sed -i 's#C:\\Users\\Admin\\.minikube\\ca.crt#$HOME/.kube/ca.crt#g' $HOME/.kube/config
+        sed -i 's#C:\\Users\\Admin\\.minikube\\profiles\\minikube\\client.crt#$HOME/.kube/client.crt#g' $HOME/.kube/config
+        sed -i 's#C:\\Users\\Admin\\.minikube\\profiles\\minikube\\client.key#$HOME/.kube/client.key#g' $HOME/.kube/config
+      env: 
+        KUBECONFIG_CONTENTS: ${{ secrets.KUBECONFIG_CONTENTS }}
 
     - name: Deploy to Minikube
       run: |
