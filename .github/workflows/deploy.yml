@@ -39,6 +39,24 @@ jobs:
       env: 
         KUBECONFIG_CONTENTS: ${{ secrets.KUBECONFIG_CONTENTS }}
 
+    - name: Create CA certificate file
+      run: |
+        echo "$K8S_CA_DATA" | base64 --decode > $HOME/.kube/ca.crt
+      env:
+        K8S_CA_DATA: ${{ secrets.K8S_CA_DATA }}
+
+    - name: Create client certificate file
+      run: |
+        echo "$K8S_CLIENT_CERT_DATA" | base64 --decode > $HOME/.kube/client.crt
+      env:
+        K8S_CLIENT_CERT_DATA: ${{ secrets.K8S_CLIENT_CERT_DATA }}
+
+    - name: Create client key file
+      run: |
+        echo "$K8S_CLIENT_KEY_DATA" | base64 --decode > $HOME/.kube/client.key
+      env:
+        K8S_CLIENT_KEY_DATA: ${{ secrets.K8S_CLIENT_KEY_DATA }}
+
     - name: Deploy to Minikube
       run: |
         kubectl apply -f deployment.yaml
